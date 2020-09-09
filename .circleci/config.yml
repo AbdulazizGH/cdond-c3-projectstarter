@@ -135,6 +135,10 @@ jobs:
               --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID}" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text >> .circleci/ansible/inventory.txt
+      - run:
+          name: Install tar
+          command: |
+            sudo yum install tar
       - persist_to_workspace:
           root: ~/
           paths:
