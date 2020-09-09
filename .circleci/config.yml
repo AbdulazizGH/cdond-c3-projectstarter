@@ -23,7 +23,7 @@ jobs:
             echo "Hello World"
   build-frontend:
       docker:
-        - image: amazon/aws-cli
+        - image: circleci/node
       steps:
         - checkout
         - run:
@@ -33,7 +33,7 @@ jobs:
               npm i
   build-backend:
       docker:
-        - image: amazon/aws-cli
+        - image: circleci/node
       steps:
         - checkout
         - run:
