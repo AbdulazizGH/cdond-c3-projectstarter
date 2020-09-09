@@ -66,9 +66,28 @@ jobs:
               npm i
               npm run test
 
-#  can-frontend:
-
-#  scan-backend:
+  scan-frontend:
+      docker:
+        - image: circleci/node
+      steps:
+        - checkout
+        - run:
+            name: Audit Frontend
+            command: |
+              cd frontend
+              npm i
+              npm audit --audit-level=critical
+  scan-backend:
+      docker:
+        - image: circleci/node
+      steps:
+        - checkout
+        - run:
+            name: Audit Backend
+            command: |
+              cd backend
+              npm i
+              npm audit --audit-level=critical
 
 #  deploy-infrastructure:
 
