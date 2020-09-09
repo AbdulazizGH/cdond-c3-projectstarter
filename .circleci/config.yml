@@ -43,9 +43,28 @@ jobs:
               cd backend
               npm i
               npm run build
-#  test-frontend:
-
-#  est-backend:
+  test-frontend:
+      docker:
+        - image: circleci/node
+      steps:
+        - checkout
+        - run:
+            name: Test Frontend
+            command: |
+              cd frontend
+              npm i
+              npm run test
+  test-backend:
+      docker:
+        - image: circleci/node
+      steps:
+        - checkout
+        - run:
+            name: Test Backend
+            command: |
+              cd backend
+              npm i
+              npm run test
 
 #  can-frontend:
 
@@ -71,3 +90,5 @@ workflows:
       - hello-world
       - build-frontend
       - build-backend
+      - test-frontend
+      - test-backend
