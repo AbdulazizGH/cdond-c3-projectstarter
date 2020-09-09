@@ -68,3 +68,4 @@ workflows:
     jobs:
       - hello-world
       - build-frontend
+      - build-backend
