@@ -118,6 +118,7 @@ jobs:
             cd .circleci/files
             aws cloudformation deploy \
             --template-file backend.yml \
+            --parameter-overrides ID="${CIRCLE_WORKFLOW_ID}"  \
             --stack-name backend-stack
       - run:
           name: Deploy Frontend Infrastructure
@@ -125,9 +126,43 @@ jobs:
             cd .circleci/files
             aws cloudformation deploy \
             --template-file frontend.yml \
+            --parameter-overrides ID="${CIRCLE_WORKFLOW_ID}"  \
             --stack-name frontend-stack
-
-#  configure-infrastructure:
+      - run:
+          name: Add Backend EC2 Instance IP to inventory
+          command: |
+            aws ec2 describe-instances \
+              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID}" \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --output text >> .circleci/ansible/inventory.txt
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/ansible/inventory.txt
+      - destroy-environment:
+          workflow_id: "${CIRCLE_WORKFLOW_ID}"
+    
+  configure-infrastructure:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["3f:cc:80:fa:1c:cc:92:fe:03:fd:e8:7b:fc:c0:24:e9"]
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update tar gzip ansible nodejs npm
+            pip install awscli
+      - run:
+          name: Configure server
+          command: |
+            cd .circleci/ansible
+            ansible-playbook -i inventory.txt configure-server.yml
+      - destroy-environment:
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
 
 #  run-migrations:
 
