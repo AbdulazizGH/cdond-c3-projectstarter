@@ -89,7 +89,25 @@ jobs:
               npm i
               npm audit --audit-level=critical
 
-#  deploy-infrastructure:
+  deploy-infrastructure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Deploy Backend Infrastructure
+          command: |
+            cd .circleci/files
+            aws cloudformation deploy \
+            --template-file backend.yml \
+            --stack-name backend-stack
+      - run:
+          name: Deploy Frontend Infrastructure
+          command: |
+            cd .circleci/files
+            aws cloudformation deploy \
+            --template-file frontend.yml \
+            --stack-name frontend-stack
 
 #  configure-infrastructure:
 
@@ -111,5 +129,8 @@ workflows:
       - build-backend
       - test-frontend
       - test-backend
-      - scan-frontend
-      - scan-backend
+      - deploy-infrastructure:
+          name: deploy-infrastructure
+          requires:
+            - test-frontend
+            - test-backend
