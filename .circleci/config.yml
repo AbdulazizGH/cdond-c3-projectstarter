@@ -22,8 +22,14 @@ jobs:
           command: |
             echo "Hello World"
 
-#  build-frontend:
-
+build-frontend:
+    docker:
+      - image: amazon/aws-cli
+      - run:
+          name: Build Frontend
+          command: |
+            cd frontend
+            npm i 
 #  build-frontend:
 
 #  test-frontend:
