@@ -3,7 +3,7 @@
 - name: "configuration servers" 
   hosts: all
   user: ubuntu
-  gather_facts: false
+  gather_facts: yes
   vars:
     TYPEORM_MIGRATIONS: "{{ lookup('env','TYPEORM_MIGRATIONS') }}"
     TYPEORM_ENTITIES: "{{ lookup('env','TYPEORM_ENTITIES') }}"
