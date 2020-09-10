@@ -189,6 +189,7 @@ jobs:
           command: |
             cd .circleci/ansible
             export ANSIBLE_DEBUG=1
+            tar -czvf ../../backend/backend.tar.gz ../../backend
             ansible-playbook -i inventory.txt configure-server.yml
       - destroy_backend_frontend
 
