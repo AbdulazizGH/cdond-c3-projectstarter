@@ -220,8 +220,7 @@ jobs:
             aws s3 sync . s3://udapeople-"${CIRCLE_WORKFLOW_ID}" --delete
       - destroy_backend_frontend
       - db_rollback
-#  deploy-backend:  
-
+      
 #  smoke-test:
 
 #  cloudfront-update:
@@ -229,17 +228,17 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-frontend
-      - build-backend
-      - test-frontend:
-          requires: [build-frontend]
-      - test-backend:
-          requires: [build-backend]
-      - deploy-infrastructure:
-          requires:
-            - test-frontend
-            - test-backend
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
+      # - build-frontend
+      # - build-backend
+      # - test-frontend:
+      #     requires: [build-frontend]
+      # - test-backend:
+      #     requires: [build-backend]
+      # - deploy-infrastructure:
+      #     requires:
+      #       - test-frontend
+      #       - test-backend
+      - configure-infrastructure
+          # requires: [deploy-infrastructure]
       - deploy-frontend:
           requires: [configure-infrastructure]
