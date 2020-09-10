@@ -1,4 +1,6 @@
+---
 - name: "Copy backend files to remote server"
+  becomes: yes
   copy:
     dest: /home/ubuntu/backend
     src: /root/project/backend
