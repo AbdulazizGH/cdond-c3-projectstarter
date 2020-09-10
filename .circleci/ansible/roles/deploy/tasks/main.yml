@@ -2,7 +2,7 @@
 
 - name: "Copy backend files to remote server"
   copy:
-    dest: /home/ubuntu/backend
+    dest: /home/ubuntu
     src: /root/project/backend
 - name: "Build npm packages"
   shell: |
