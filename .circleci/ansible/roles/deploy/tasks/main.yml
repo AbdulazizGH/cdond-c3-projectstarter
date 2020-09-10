@@ -16,6 +16,7 @@
   poll: 60
   shell: |
     cd /home/ubuntu/backend
+    npm i
     npm run build
 - name: "run migrations and save status to memstash.io"
   poll: 60
