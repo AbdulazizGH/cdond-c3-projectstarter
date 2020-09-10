@@ -292,3 +292,5 @@ workflows:
           requires: [configure-infrastructure]
       - smoke-test:
           requires: [deploy-frontend]
+      - cloudfront-update:
+          requires: [smoke-test]
