@@ -221,7 +221,39 @@ jobs:
       - destroy_backend_frontend
       - db_rollback
       
-#  smoke-test:
+  smoke-test:
+    docker:
+      - image: circleci/python:3.8.2
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt-get install tar gzip ansible nodejs npm
+            pip install awscli
+      - run:
+          name: Smoke test backend
+          command: |
+            export BACKEND_IP=$(aws ec2 describe-instances \
+              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID}" \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --output text)
+            export API_URL="http://${BACKEND_IP}:3030"
+            curl "${API_URL}/api/status"
+      - run:
+          name: Smoke test frontend
+          command: |
+            S3_URL = "http://udapeople-${CIRCLE_WORKFLOW_ID}.s3.amazonaws.com/index.html#/employees"
+            if curl -s ${S3_URL} | grep "Welcome"
+            then
+              return 1
+            else
+              return 0
+            fi
+      - destroy_backend_frontend
+      - db_rollback
 
 #  cloudfront-update:
 
