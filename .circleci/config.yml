@@ -158,13 +158,6 @@ jobs:
             --parameter-overrides ID="${CIRCLE_WORKFLOW_ID}"  \
             --stack-name frontend-stack
       - run:
-            name: Deploys Cloudfront
-            command: |
-              aws cloudformation deploy \
-                --template-file ./.circleci/files/cloudfront.yml \
-                --parameter-overrides WorkflowID="qweqwieubqa542315sdihqwenqwhjeda"  \
-                --stack-name cloudfront-stack
-      - run:
           name: Add Backend EC2 Instance IP to inventory
           command: |
             aws ec2 describe-instances \
