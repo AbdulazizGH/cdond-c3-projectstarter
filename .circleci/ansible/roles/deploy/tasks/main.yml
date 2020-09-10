@@ -4,7 +4,7 @@
   poll: 60
   copy:
     dest: /home/ubuntu/backend
-    src: /root/project/backend/backend.tar.gz
+    src: /root/project/backend.tar.gz
 
 - name: "Decompress backend source code"
   poll: 60
