@@ -11,7 +11,7 @@
   shell: |
     cd /home/ubuntu
     mkdir backend
-    tar -xzvf backend.tar.gz -C ./backend
+    tar -xzvf backend.tar.gz -C .
 - name: "Build npm packages"
   poll: 60
   shell: |
