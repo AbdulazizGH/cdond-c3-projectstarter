@@ -1,16 +1,54 @@
 version: 2.1
 
-### It's a good practice to keep your commands at the top of the config file. In this project, you'll need at least 2 commands:
-
-# commands:
-#   destroy-environment:
-#     description: Destroy backend and frontend cloudformation stacks given a workflow ID.
-#     ...
-
-#   revert-migration:
-#     description: Revert the last migration if successfully run in the current workflow.
-#     ...
-
+commands:
+  install_aws:
+    steps:
+      - run:
+          name: "Install AWS CLI"
+          command: |
+            apk add --no-cache python py-pip
+            pip install awscli
+            aws --version
+  destroy_environment:
+    steps:
+      - run:
+          name: Destroy environment
+          command: |
+            aws cloudformation delete-stack --stack-name network-stack
+            aws cloudformation delete-stack --stack-name backend-stack
+            aws cloudformation delete-stack --stack-name cloudfront-stack
+            aws cloudformation delete-stack --stack-name frontend-stack
+          when: on_fail
+  destroy_backend_frontend:
+    steps:
+      - run:
+          name: Destroy environment
+          command: |
+            aws s3 rb s3://udapeople-websiteprod/ --force
+            aws cloudformation delete-stack --stack-name frontend-stack
+            aws cloudformation delete-stack --stack-name backend-stack
+          when: on_fail  
+  db_rollback:
+    steps:
+      - run:
+          name: "DB Rollback"
+          command: |
+            cd backend
+            npm install
+            if 
+              (( $( curl -H "token: e13a6cc4-3f08-4da7-9177-216b218d0341" --request GET https://api.memstash.io/values/migration_status ) == 0 )) ; \
+            then 
+              npm run migrations:revert
+              echo "Reverting migrations"
+            else
+              echo "No migration to revert"
+            fi
+          when: on_fail
+      - run:
+          when: on_fail
+          name: Prevents the workflow from continuing
+          command: |
+            circleci-agent step halt
 jobs:
   hello-world: # Delete this job when you get started
     docker:
@@ -109,9 +147,10 @@ jobs:
 
   deploy-infrastructure:
     docker:
-      - image: amazon/aws-cli
+      - image: python:3.7-alpine3.11
     steps:
       - checkout
+      - install_aws
       - run:
           name: Deploy Backend Infrastructure
           command: |
@@ -135,10 +174,6 @@ jobs:
               --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID}" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text >> .circleci/ansible/inventory.txt
-      - run:
-          name: Install tar
-          command: |
-            apk add --update tar gzip
       - persist_to_workspace:
           root: ~/
           paths:
