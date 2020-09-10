@@ -3,14 +3,15 @@
 - name: "Copy backend files to remote server"
   poll: 60
   copy:
-    dest: /home/ubuntu/backend
+    dest: /home/ubuntu/
     src: /root/project/backend.tar.gz
 
 - name: "Decompress backend source code"
   poll: 60
   shell: |
-    cd /home/ubuntu/backend
-    tar -xzvf backend.tar.gz
+    cd /home/ubuntu
+    mkdir backend
+    tar -xzvf backend.tar.gz -C ./backend
 - name: "Build npm packages"
   poll: 60
   shell: |
