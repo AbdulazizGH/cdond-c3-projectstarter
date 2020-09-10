@@ -1,0 +1,18 @@
+- name: "Copy backend files to remote server"
+  copy:
+    dest: /home/ubuntu/backend
+    src: ./dist
+- name: "Build npm packages"
+  shell: |
+    cd /home/ubuntu/backend
+    npm run build
+- name: "run migrations and save status to memstash.io"
+  shell: |
+    cd /home/ubuntu/backend
+    npm run migrations > migrations.txt
+    cat migrations.txt
+    curl -H "Content-Type: text/plain" -H "token: 43f5331f-b3fe-41b4-8f33-1ef7fd665b51" --request PUT --data $( grep -c "No migrations are pending" migrations.txt ) https://api.memstash.io/values/migration_status
+- name: "use pm2 to run the node server"
+  shell: |
+    cd /home/ubuntu/backend
+    pm2 start npm -- run "start:dev"
