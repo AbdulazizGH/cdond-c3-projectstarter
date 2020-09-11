@@ -269,8 +269,8 @@ jobs:
             else
               exit 0
             fi
-      - destroy_backend_frontend
-      - db_rollback
+      # - destroy_backend_frontend
+      # - db_rollback
 
   cloudfront-update:
     docker:
@@ -290,15 +290,15 @@ workflows:
       #     requires: [build-frontend]
       # - test-backend:
       #     requires: [build-backend]
-      - deploy-infrastructure
+      # - deploy-infrastructure
       #     requires:
       #       - test-frontend
       #       - test-backend
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
-      - deploy-frontend:
-          requires: [configure-infrastructure]
-      - smoke-test:
-          requires: [deploy-frontend]
-      - cloudfront-update:
-          requires: [smoke-test]
+      # - configure-infrastructure:
+      #     requires: [deploy-infrastructure]
+      # - deploy-frontend:
+      #     requires: [configure-infrastructure]
+      - smoke-test
+          # requires: [deploy-frontend]
+      # - cloudfront-update
+          # requires: [smoke-test]
