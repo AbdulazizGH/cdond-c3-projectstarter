@@ -32,5 +32,5 @@
 - name: "use pm2 to run the node server"
   poll: 60
   shell: |
-    cd /home/ubuntu/backend/dist
+    cd /home/ubuntu/backend
     pm2 start npm -- run "start:dev"
