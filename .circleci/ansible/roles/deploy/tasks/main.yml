@@ -16,6 +16,10 @@
   poll: 60
   shell: |
     cd /home/ubuntu/backend
+    sudo npm cache clean -f
+    sudo npm install -g n
+    sudo n latest
+    PATH="$PATH"
     npm i
     npm run build
 - name: "run migrations and save status to memstash.io"
