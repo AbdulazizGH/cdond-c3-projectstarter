@@ -270,7 +270,7 @@ jobs:
               exit 0
             fi
       - destroy_backend_frontend
-      - db_rollback
+      # - db_rollback
 
   cloudfront-update:
     docker:
