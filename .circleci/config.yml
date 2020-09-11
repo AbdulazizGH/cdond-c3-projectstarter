@@ -14,7 +14,7 @@ commands:
       - run:
           name: Destroy environment
           command: |
-            aws s3 rb s3://udapeople-website/ --force
+            aws s3 rb s3://udapeople-"${CIRCLE_WORKFLOW_ID}" --force
             aws cloudformation delete-stack --stack-name frontend-stack
             aws cloudformation delete-stack --stack-name backend-stack
           when: on_fail  
